@@ -4,10 +4,11 @@
 #include <regex>
 #include <cpr/cpr.h>
 #include <nlohmann/json.hh>
-#include <xorstr.hh>
+
+constexpr std::string session_token = "SESSIONCOOKIE";
 
 std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, bool>>> utils::search_movie( const std::string& name ) {
-	const auto request = Get( cpr::Url{ std::format( "https://raptus.site/search?_t=5&_u=5&p=1&postersize=poster&q={}", name ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", _( "CHANGEHERE" ) ) } } ).text;
+	const auto request = Get( cpr::Url{ std::format( "https://raptus.site/search?_t=5&_u=5&p=1&postersize=poster&q={}", name ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", session_token ) } } ).text;
 	if ( !nlohmann::json::accept( request ) )
 		return { };
 
@@ -24,7 +25,7 @@ std::string utils::movie_download_link( const std::string& id, const quality q )
 	auto q_str = std::string( magic_enum::enum_name( q ) );
 	q_str = std::regex_replace( q_str, std::regex( "\\P" ), "" );
 
-	const auto request = Get( cpr::Url{ std::format( "https://raptus.site/media/links/{}?_t=5&_u=5", id ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", _( "CHANGEHERE" ) ) } } ).text;
+	const auto request = Get( cpr::Url{ std::format( "https://raptus.site/media/links/{}?_t=5&_u=5", id ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", session_token ) } } ).text;
 	if ( !nlohmann::json::accept( request ) )
 		return "";
 
@@ -33,7 +34,7 @@ std::string utils::movie_download_link( const std::string& id, const quality q )
 }
 
 std::vector<std::pair<std::string, std::pair<std::string, std::string>>> utils::episode_info( const std::string& serie_url ) {
-	const auto request = Get( cpr::Url{ std::format( "https://raptus.site/{}?_t=5&_u=5", serie_url ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", _( "CHANGEHERE" ) ) } } ).text;
+	const auto request = Get( cpr::Url{ std::format( "https://raptus.site/{}?_t=5&_u=5", serie_url ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", session_token ) } } ).text;
 	if ( !nlohmann::json::accept( request ) )
 		return {};
 
@@ -48,7 +49,7 @@ std::vector<std::pair<std::string, std::pair<std::string, std::string>>> utils::
 		auto season_idx = season_list;
 		season_idx.erase( 0, season_idx.find_last_of( '-' ) + 1 );
 
-		const auto request_episodes = Get( cpr::Url{ std::format( "https://raptus.site{}?_t=5&_u=5", season_list ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", _( "CHANGEHERE" ) ) } } ).text;
+		const auto request_episodes = Get( cpr::Url{ std::format( "https://raptus.site{}?_t=5&_u=5", season_list ) }, cpr::Header{ { "accept", "application/json" }, { "cookie", std::format( R"(pip=0; promo_id=0; auid=0; session={}; si2=0; profile_id=0; ds8=1; _vjs_volume=0; test_cookie=0; pxid=0)", session_token ) } } ).text;
 		if ( !nlohmann::json::accept( request_episodes ) )
 			continue;
 
